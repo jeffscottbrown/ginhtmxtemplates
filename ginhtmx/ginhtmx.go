@@ -13,45 +13,45 @@
 //
 // Here is an example of how to use ginhtmx in your Gin application:
 //
-// . package server
+//		 package server
 //
-//	 import (
-//		 "embed"
-//		 "html/template"
+//		 import (
+//		   "embed"
+//		   "html/template"
 //
-//	 	"github.com/gin-gonic/gin"
-//		 "github.com/jeffscottbrown/ginhtmxtemplates/ginhtmx"
-//	 )
+//		   "github.com/gin-gonic/gin"
+//		   "github.com/jeffscottbrown/ginhtmxtemplates/ginhtmx"
+//		 )
 //
-//	 //go:embed templates/*.html
-//	 var embeddedHTMLFiles embed.FS
+//		 //go:embed templates/*.html
+//		 var embeddedHTMLFiles embed.FS
 //
-//	 func Run() {
-//		 router := gin.Default()
+//		 func Run() {
+//		   router := gin.Default()
 //
-//		 tmpl := template.Must(template.New("").Funcs(router.FuncMap).ParseFS(embeddedHTMLFiles, "templates/*.html"))
-//		 htmx := ginhtmx.NewHtmx(tmpl)
+//		   tmpl := template.Must(template.New("").Funcs(router.FuncMap).ParseFS(embeddedHTMLFiles, "templates/*.html"))
+//		   htmx := ginhtmx.NewHtmx(tmpl)
 //
-//		 handlers := &demoHandlers{htmx: htmx}
+//		   handlers := &demoHandlers{htmx: htmx}
 //
-//		 router.GET("/", handlers.home)
-//		 router.GET("/about", handlers.about)
+//		   router.GET("/", handlers.home)
+//		   router.GET("/about", handlers.about)
 //
-//		 router.Run(":8080")
-//	 }
+//		   router.Run(":8080")
+//		 }
 //
 //	 func (handlers *demoHandlers) home(c *gin.Context) {
-//		 // Your handler logic here before rendering template
-//		 handlers.htmx.RenderTemplate(c, "home", gin.H{})
+//	   // Your handler logic here before rendering template
+//	   handlers.htmx.RenderTemplate(c, "home", gin.H{})
 //	 }
 //
-//	 func (handlers *demoHandlers) about(c *gin.Context) {
-//	 	// Your handler logic here before rendering template
-//	 	handlers.htmx.RenderTemplate(c, "about", gin.H{})
-//	 }
+//	   func (handlers *demoHandlers) about(c *gin.Context) {
+//	     // Your handler logic here before rendering template
+//	     handlers.htmx.RenderTemplate(c, "about", gin.H{})
+//	   }
 //
 //	 type demoHandlers struct {
-//	 	htmx *ginhtmx.Htmx
+//	   htmx *ginhtmx.Htmx
 //	 }
 //
 // That server runs a simple hello word application with two routes, "/" and "/about".
@@ -59,33 +59,32 @@
 //
 // Here is an example of a layout template named "layout" defined in the templates/layout.html file:
 //
-//			{{define "layout"}}
+//	{{define "layout"}}
 //
-//		 <!DOCTYPE html>
+//	<!DOCTYPE html>
 //
-//			<html lang="en">
-//			  <head>
-//			    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-//			    <title>My Website</title>
-//			  </head>
-//			  <body>
-//			    <header>
-//			       <h1>Welcome</h1>
-//			       <nav>
-//			           <a hx-get="/" hx-push-url="true" hx-target="#content">Home</a> |
-//			           <a hx-get="/about" hx-push-url="true" hx-target="#content">About</a>
-//			       </nav>
-//			    </header>
-//			    <main id="content">
-//			       {{ .Content }}
-//			    </main>
-//			    <footer>
-//			       <p>&copy; 2025 My Website</p>
-//			    </footer>
-//			 </body>
-//			</html>
-//
-//	 {{end}}
+//	<html lang="en">
+//	  <head>
+//	    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+//	    <title>My Website</title>
+//	  </head>
+//	  <body>
+//	    <header>
+//	      <h1>Welcome</h1>
+//	      <nav>
+//	        <a hx-get="/" hx-push-url="true" hx-target="#content">Home</a> |
+//	        <a hx-get="/about" hx-push-url="true" hx-target="#content">About</a>
+//	      </nav>
+//	    </header>
+//	    <main id="content">
+//	      {{ .Content }}
+//	    </main>
+//	    <footer>
+//	      <p>&copy; 2025 My Website</p>
+//	    </footer>
+//	  </body>
+//	</html>
+//	{{end}}
 //
 // The layout template includes the HTMX script and defines a basic HTML structure
 // with a header, navigation links, a main content area, and a footer. The main content
@@ -94,7 +93,7 @@
 // A simple "home" template defined in the templates/home.html file:
 //
 //	{{define "home"}}
-//	 <h1>Home Page</h1>
+//	<h1>Home Page</h1>
 //	{{end}}
 //
 // A simple "about" template defined in the templates/about.html file:
