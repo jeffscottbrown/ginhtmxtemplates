@@ -125,8 +125,8 @@ type HtmxConfig struct {
 	// LayoutTemplateName is the name of the layout template that templates will be wrapped in
 	LayoutTemplateName string
 
-	// BodyVariableName is the name of the variable in the layout template that will hold the body content
-	BodyVariableName string
+	// ContentVariableName is the name of the variable in the layout template that will hold the body content
+	ContentVariableName string
 }
 
 // NewHtmxWithConfig creates a new instance of Htmx with the provided HTML templates and configuration.
@@ -143,8 +143,8 @@ func NewHtmxWithConfig(template *template.Template, config HtmxConfig) *Htmx {
 func NewHtmx(template *template.Template) *Htmx {
 	return &Htmx{
 		config: HtmxConfig{
-			LayoutTemplateName: "layout",
-			BodyVariableName:   "Content",
+			LayoutTemplateName:  "layout",
+			ContentVariableName: "Content",
 		},
 		template: template,
 	}
@@ -162,7 +162,7 @@ func (htmx *Htmx) RenderTemplateWithStatus(ginContext *gin.Context, templateName
 	} else {
 		_ = htmx.template.ExecuteTemplate(ginContext.Writer, htmx.config.LayoutTemplateName, gin.H{
 			//nolint:gosec
-			htmx.config.BodyVariableName: template.HTML(htmx.renderTemplateToString(templateName, data)),
+			htmx.config.ContentVariableName: template.HTML(htmx.renderTemplateToString(templateName, data)),
 		})
 	}
 }

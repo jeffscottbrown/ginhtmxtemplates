@@ -57,8 +57,8 @@ func (suite *GinHtmxConfigTestSuite) SetupSuite() {
 `
 	tmpl := template.Must(template.New("").Parse(templateContent))
 	suite.htmx = ginhtmx.NewHtmxWithConfig(tmpl, ginhtmx.HtmxConfig{
-		LayoutTemplateName: "customlayout",
-		BodyVariableName:   "CustomBody",
+		LayoutTemplateName:  "customlayout",
+		ContentVariableName: "CustomBody",
 	})
 }
 
