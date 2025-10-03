@@ -1,0 +1,63 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.25.1
+
+      - name: Cache Playwright browser binaries
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers
+          restore-keys: |
+            ${{ runner.os }}-playwright
+
+      - name: Install Playwright CLI and browsers
+        run: |
+          go install github.com/playwright-community/playwright-go/cmd/playwright@v0.5200.0
+          playwright install --with-deps
+
+      - name: Install go-junit-report
+        run: go install github.com/jstemmer/go-junit-report@latest
+
+      - name: Install junit-viewer
+        run: npm install -g junit-viewer
+
+      - name: Run tests and create JUnit report
+        run: |
+          mkdir -p reports
+          set -o pipefail
+          go test -coverprofile=./coverage.out -coverpkg=./... -v 2>&1 ./... | tee reports/test-output.txt | go-junit-report > reports/junit-report.xml
+          TEST_EXIT_CODE=${PIPESTATUS[0]}
+          go tool cover -html=./coverage.out -o reports/test-coverage.html
+          exit $TEST_EXIT_CODE
+      - name: check test coverage
+        uses: vladopajic/go-test-coverage@v2
+        with:
+          config: ./.testcoverage.yml
+          debug: true
+      - name: Convert XML to HTML
+        if: always()
+        run: |
+          junit-viewer --results=reports/junit-report.xml --save=reports/test-results.html
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            reports/test-results.html
+            reports/test-coverage.html
