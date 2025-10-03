@@ -59,33 +59,33 @@
 //
 // Here is an example of a layout template named "layout" defined in the templates/layout.html file:
 //
-//	{{define "layout"}}
+//			{{define "layout"}}
 //
-// . <!DOCTYPE html>
+//		 <!DOCTYPE html>
 //
-//	<html lang="en">
-//	  <head>
-//	    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-//	    <title>My Website</title>
-//	  </head>
-//	  <body>
-//	    <header>
-//	       <h1>Welcome</h1>
-//	       <nav>
-//	           <a hx-get="/" hx-push-url="true" hx-target="#content">Home</a> |
-//	           <a hx-get="/about" hx-push-url="true" hx-target="#content">About</a>
-//	       </nav>
-//	    </header>
-//	    <main id="content">
-//	       {{ .Content }}
-//	    </main>
-//	    <footer>
-//	       <p>&copy; 2025 My Website</p>
-//	    </footer>
-//	 </body>
-//	</html>
+//			<html lang="en">
+//			  <head>
+//			    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+//			    <title>My Website</title>
+//			  </head>
+//			  <body>
+//			    <header>
+//			       <h1>Welcome</h1>
+//			       <nav>
+//			           <a hx-get="/" hx-push-url="true" hx-target="#content">Home</a> |
+//			           <a hx-get="/about" hx-push-url="true" hx-target="#content">About</a>
+//			       </nav>
+//			    </header>
+//			    <main id="content">
+//			       {{ .Content }}
+//			    </main>
+//			    <footer>
+//			       <p>&copy; 2025 My Website</p>
+//			    </footer>
+//			 </body>
+//			</html>
 //
-// {{end}}
+//	 {{end}}
 //
 // The layout template includes the HTMX script and defines a basic HTML structure
 // with a header, navigation links, a main content area, and a footer. The main content
