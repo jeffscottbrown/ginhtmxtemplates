@@ -15,7 +15,7 @@
 // NewHtmxWithConfig function takes a HtmxConfig struct which allows you to
 // specify the layout template name and body variable name.
 //
-// Here is an example ofusing ginhtmx in a simple Gin application:
+// Here is an example of using ginhtmx in a simple Gin application:
 //
 //	package server
 //
