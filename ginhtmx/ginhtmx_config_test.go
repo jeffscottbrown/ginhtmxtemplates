@@ -18,9 +18,9 @@ func (suite *GinHtmxConfigTestSuite) TestPageIsDecoratedWithNonDefaultLayout() {
 
 	testContext.Request = httptest.NewRequest(http.MethodGet, "/", nil)
 
-	suite.htmx.RenderTemplate(testContext, "hello", gin.H{
+	suite.htmx.Render(testContext, gin.H{
 		"Name": "Jerry",
-	})
+	}, "hello")
 
 	suite.Equal(http.StatusOK, recorder.Code, "Expected status 200")
 

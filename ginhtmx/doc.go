@@ -1,10 +1,10 @@
 // Package ginhtmx provides utilities for rendering templates which use HTMX
 // in Gin web applications.
 //
-// From your gin handler, you can use the RenderTemplate or RenderTemplateWithStatus
+// From your gin handler, you can use the Render or RenderWithStatus
 // methods to render templates. If the request includes the "Hx-Request" header
 // indicating that it is an HTMX request, then the template will be rendered as-is.
-// If the request does not include that header, then the template will be wrapped in
+// If the request does not include that header, then the templates will be wrapped in
 // a layout template.  This is useful for providing a consistent layout for
 // non-HTMX requests while still allowing HTMX requests to receive only the
 // content defined in the requested template.
@@ -46,12 +46,12 @@
 //
 //	func (handler *demoHandler) home(c *gin.Context) {
 //	  // Your handler logic here before rendering template
-//	  handler.htmx.RenderTemplate(c, "home", gin.H{})
+//	  handler.htmx.Render(c, "home", gin.H{})
 //	}
 //
 //	func (handler *demoHandler) about(c *gin.Context) {
 //	  // Your handler logic here before rendering template
-//	  handler.htmx.RenderTemplate(c, "about", gin.H{})
+//	  handler.htmx.Render(c, "about", gin.H{})
 //	}
 //
 //	type demoHandler struct {
@@ -105,4 +105,18 @@
 //	{{define "about"}}
 //	<h1>About Page</h1>
 //	{{end}}
+//
+// A common use case for rendering multiple templates together is to support
+// Out Of Band (OOB) swaps with HTMX.  In this case, you might want to
+// render the main content template along with one or more OOB templates.
+// You can do that by passing multiple template names to the Render or
+// RenderWithStatus methods.  For example, if you had a "notifications"
+// template that defined an OOB swap for a notifications area, you could
+// render it along with the main content template like this:
+//
+//	handler.htmx.Render(c, gin.H{}, "home", "notifications")
+//
+// In this case, if the request is an HTMX request, then both the "home"
+// and "notifications" templates would be rendered and concatenated together
+// in the response.
 package ginhtmx

@@ -18,9 +18,9 @@ func (suite *GinHtmxTestSuite) TestPageIsDecoratedWithLayout() {
 
 	testContext.Request = httptest.NewRequest(http.MethodGet, "/", nil)
 
-	suite.htmx.RenderTemplate(testContext, "hello", gin.H{
+	suite.htmx.Render(testContext, gin.H{
 		"Name": "Jerry",
-	})
+	}, "hello")
 
 	suite.Equal(http.StatusOK, recorder.Code, "Expected status 200")
 
@@ -44,9 +44,9 @@ func (suite *GinHtmxTestSuite) TestPageIsNotDecoratedWithLayoutForHtmxRequest() 
 	testContext.Request = httptest.NewRequest(http.MethodGet, "/", nil)
 	testContext.Request.Header.Set("Hx-Request", "true")
 
-	suite.htmx.RenderTemplate(testContext, "hello", gin.H{
+	suite.htmx.Render(testContext, gin.H{
 		"Name": "Jerry",
-	})
+	}, "hello")
 
 	suite.Equal(http.StatusOK, recorder.Code)
 

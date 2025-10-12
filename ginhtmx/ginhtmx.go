@@ -43,28 +43,38 @@ func NewHtmx(template *template.Template) *Htmx {
 	}
 }
 
-// RenderTemplateWithStatus renders the specified template with the provided data and status code.
+// RenderWithStatus renders the specified templates with the provided data, concatenates the
+// results and then writes that to the response with the provided status code.
+// The templates are rendered and concatenated together in the order they are provided.
 // If the request does not inlcude the "Hx-Request" header indicating this is an HTMX request
-// then the template will be wrapped in the layout page.
-func (htmx *Htmx) RenderTemplateWithStatus(ginContext *gin.Context, templateName string, data gin.H, status int) {
+// then the contents will be wrapped in the layout page.
+func (htmx *Htmx) RenderWithStatus(ginContext *gin.Context, data gin.H, status int, templateNames ...string) {
 	ginContext.Status(status)
 	isHTMX := ginContext.GetHeader("HX-Request") != ""
 
 	if isHTMX {
-		_ = htmx.template.ExecuteTemplate(ginContext.Writer, templateName, data)
+		// Concatenate the rendered templates
+		var content string
+		for _, name := range templateNames {
+			content += htmx.renderTemplateToString(name, data)
+		}
+
+		ginContext.Data(http.StatusOK, "text/html; charset=utf-8", []byte(content))
 	} else {
 		_ = htmx.template.ExecuteTemplate(ginContext.Writer, htmx.config.LayoutTemplateName, gin.H{
 			//nolint:gosec
-			htmx.config.ContentVariableName: template.HTML(htmx.renderTemplateToString(templateName, data)),
+			htmx.config.ContentVariableName: template.HTML(htmx.renderTemplateToString(templateNames[0], data)),
 		})
 	}
 }
 
-// RenderTemplate renders the specified template with the provided data and an HTTP 200 status code.
+// Render renders the specified templates with the provided data, concatenates the
+// results and then writes that to the response with a 200 status code.
+// The templates are rendered and concatenated together in the order they are provided.
 // If the request does not inlcude the "Hx-Request" header indicating this is an HTMX request
-// then the template will be wrapped in the layout page.
-func (htmx *Htmx) RenderTemplate(c *gin.Context, templateName string, data gin.H) {
-	htmx.RenderTemplateWithStatus(c, templateName, data, http.StatusOK)
+// then the contents will be wrapped in the layout page.
+func (htmx *Htmx) Render(c *gin.Context, data gin.H, templateNames ...string) {
+	htmx.RenderWithStatus(c, data, http.StatusOK, templateNames...)
 }
 
 func (htmx *Htmx) renderTemplateToString(name string, data any) string {
