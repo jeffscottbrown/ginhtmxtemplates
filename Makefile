@@ -4,15 +4,15 @@ COVERAGE_OUT=coverage.out
 COVERAGE_HTML=coverage.html
 
 check-coverage: test
-	@go tool go-test-coverage --config=./.testcoverage.yml
+	go tool go-test-coverage --config=./.testcoverage.yml
 
 # Run tests with coverage, don't exit on failure
 test:
-	@go test -count=1 -coverpkg=./... -coverprofile=$(COVERAGE_OUT) ./... || true
+	go test -count=1 -coverpkg=./... -coverprofile=$(COVERAGE_OUT) ./... || true
 
 # Generate HTML report from coverage profile
 coverage-report: test
-	@go tool cover -html=$(COVERAGE_OUT) -o $(COVERAGE_HTML)
+	go tool cover -html=$(COVERAGE_OUT) -o $(COVERAGE_HTML)
 
 # Open the coverage report in the default browser
 open: coverage-report
@@ -27,10 +27,10 @@ open: coverage-report
 		echo "Could not detect a command to open the browser."; \
 	fi
 clean:
-	@rm -f $(COVERAGE_OUT) $(COVERAGE_HTML)
+	rm -f $(COVERAGE_OUT) $(COVERAGE_HTML)
 
 lint:
-	@golangci-lint run ./...
+	golangci-lint run ./...
 
 check: check-coverage lint
 	@echo "All checks passed!"
