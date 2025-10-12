@@ -52,18 +52,18 @@ func (htmx *Htmx) RenderWithStatus(ginContext *gin.Context, data gin.H, status i
 	ginContext.Status(status)
 	isHTMX := ginContext.GetHeader("HX-Request") != ""
 
-	if isHTMX {
-		// Concatenate the rendered templates
-		var content string
-		for _, name := range templateNames {
-			content += htmx.renderTemplateToString(name, data)
-		}
+	// Concatenate the rendered templates
+	var content string
+	for _, name := range templateNames {
+		content += htmx.renderTemplateToString(name, data)
+	}
 
+	if isHTMX {
 		ginContext.Data(http.StatusOK, "text/html; charset=utf-8", []byte(content))
 	} else {
 		_ = htmx.template.ExecuteTemplate(ginContext.Writer, htmx.config.LayoutTemplateName, gin.H{
 			//nolint:gosec
-			htmx.config.ContentVariableName: template.HTML(htmx.renderTemplateToString(templateNames[0], data)),
+			htmx.config.ContentVariableName: template.HTML(content),
 		})
 	}
 }
