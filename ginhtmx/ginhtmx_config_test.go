@@ -59,6 +59,7 @@ func (suite *GinHtmxConfigTestSuite) SetupSuite() {
 	suite.htmx = ginhtmx.NewHtmxWithConfig(tmpl, ginhtmx.HtmxConfig{
 		LayoutTemplateName:  "customlayout",
 		ContentVariableName: "CustomBody",
+		ModelDecorator:      nil,
 	})
 }
 

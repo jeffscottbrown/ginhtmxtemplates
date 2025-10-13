@@ -57,10 +57,32 @@ func (suite *GinHtmxTestSuite) TestPageIsNotDecoratedWithLayoutForHtmxRequest() 
 	suite.Equal(0, doc.Find("body > div").Length())
 }
 
+func (suite *GinHtmxTestSuite) TestModelDecorator() {
+	recorder := httptest.NewRecorder()
+	testContext, _ := gin.CreateTestContext(recorder)
+
+	testContext.Request = httptest.NewRequest(http.MethodGet, "/", nil)
+
+	suite.htmx.Render(testContext, gin.H{
+		"Name": "Jerry",
+	}, "hello")
+
+	suite.Equal(http.StatusOK, recorder.Code)
+
+	doc, err := goquery.NewDocumentFromReader(recorder.Body)
+	suite.Require().NoError(err, "Expected no error parsing HTML")
+
+	suite.Equal("Hello, Jerry!", doc.Find("#greeting").Text())
+	suite.Equal("My Test App", doc.Find("head > title").Text())
+}
+
 func (suite *GinHtmxTestSuite) SetupSuite() {
 	templateContent := `
  {{define "layout"}}
 <html>
+<head>
+  <title>{{.AppName}}</title>
+</head>
 <body>
   <div>Menu Bar Here</div>
   <div>
@@ -84,7 +106,11 @@ func (suite *GinHtmxTestSuite) SetupSuite() {
 {{ end }}
 `
 	tmpl := template.Must(template.New("").Parse(templateContent))
-	suite.htmx = ginhtmx.NewHtmx(tmpl)
+	suite.htmx = ginhtmx.NewHtmxWithConfig(tmpl, ginhtmx.HtmxConfig{
+		LayoutTemplateName:  "layout",
+		ContentVariableName: "Content",
+		ModelDecorator:      &AppNameModelDecorator{},
+	})
 }
 
 func TestGinHtmxTestSuite(t *testing.T) {
@@ -96,4 +122,10 @@ type GinHtmxTestSuite struct {
 	suite.Suite
 
 	htmx *ginhtmx.Htmx
+}
+
+type AppNameModelDecorator struct{}
+
+func (d *AppNameModelDecorator) DecorateModel(_ *gin.Context, model *gin.H) {
+	(*model)["AppName"] = "My Test App"
 }

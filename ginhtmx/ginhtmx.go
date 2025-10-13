@@ -20,6 +20,10 @@ type HtmxConfig struct {
 
 	// ContentVariableName is the name of the variable in the layout template that will hold the body content
 	ContentVariableName string
+
+	// ModelDecorator is an optional interface that can be implemented to modify the model.
+	// If provided, the DecorateModel method will be called before rendering any templates.
+	ModelDecorator ModelDecorator
 }
 
 // NewHtmxWithConfig creates a new instance of Htmx with the provided HTML templates and configuration.
@@ -38,6 +42,7 @@ func NewHtmx(template *template.Template) *Htmx {
 		config: HtmxConfig{
 			LayoutTemplateName:  "layout",
 			ContentVariableName: "Content",
+			ModelDecorator:      nil,
 		},
 		template: template,
 	}
@@ -52,6 +57,10 @@ func (htmx *Htmx) RenderWithStatus(ginContext *gin.Context, data gin.H, status i
 	ginContext.Status(status)
 	isHTMX := ginContext.GetHeader("HX-Request") != ""
 
+	if htmx.config.ModelDecorator != nil {
+		htmx.config.ModelDecorator.DecorateModel(ginContext, &data)
+	}
+
 	// Concatenate the rendered templates
 	var content string
 	for _, name := range templateNames {
@@ -61,10 +70,9 @@ func (htmx *Htmx) RenderWithStatus(ginContext *gin.Context, data gin.H, status i
 	if isHTMX {
 		ginContext.Data(http.StatusOK, "text/html; charset=utf-8", []byte(content))
 	} else {
-		_ = htmx.template.ExecuteTemplate(ginContext.Writer, htmx.config.LayoutTemplateName, gin.H{
-			//nolint:gosec
-			htmx.config.ContentVariableName: template.HTML(content),
-		})
+		//nolint:gosec
+		data[htmx.config.ContentVariableName] = template.HTML(content)
+		_ = htmx.template.ExecuteTemplate(ginContext.Writer, htmx.config.LayoutTemplateName, data)
 	}
 }
 
