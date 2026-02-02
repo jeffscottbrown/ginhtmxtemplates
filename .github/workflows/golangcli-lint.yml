@@ -22,3 +22,4 @@ jobs:
         with:
           install-mode: binary
           version: v2.5.0
+          args: --timeout=4m
