@@ -64,7 +64,7 @@ func (htmx *Htmx) RenderWithStatus(ginContext *gin.Context, data gin.H, status i
 	// Concatenate the rendered templates
 	var content string
 	for _, name := range templateNames {
-		content += htmx.renderTemplateToString(name, data)
+		content += htmx.renderTemplateToString(name, data) //nolint:perfsprint
 	}
 
 	if isHTMX {
